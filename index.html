@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html ng-app="alfanso">
+<head>
+	<title>AngularJS Star Rating Directive</title>
+</head>
+<body>
+	<div ng-controller="DemoCtrl">
+		<ul>
+			<li ng-repeat="rating in ratings">
+				<div av-rating data-total-rating="5" data-current-rating="{{ rating }}"></div>
+			</li>
+		</ul>
+	</div>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+	<script type="text/javascript">
+		angular.module("alfanso", [])
+			.directive("avRating", function()
+			{
+				var filledStar = "<span>&#9733;</span>",
+					emptyStar  = "<span>&#9734;</span>";
+
+				return {
+					restrict: "EA",
+					link: function(scope, el, attr)
+					{
+						attr.$observe("currentRating", function()
+						{
+							var 
+							i = 0, 
+							html = [],
+							totalRating = attr.totalRating,
+							currentRating = Math.round(Math.min(attr.currentRating, totalRating));
+
+							for ( ; i < currentRating; i++)
+								html.push( filledStar );
+
+							for ( ; i < totalRating; i++)
+								html.push( emptyStar );
+
+							el.html( html.join("") );
+						});
+					}
+				};
+			})
+			.controller("DemoCtrl", function($scope){
+				var ratings = [];
+
+				for(var i=0; i<10; i++) 
+					ratings.push( Math.floor((Math.random() * new Date().getTime()) % 5 + 1) );
+
+				console.log(ratings);
+				$scope.ratings = ratings;
+			});
+	</script>
+</body>
+</html>
